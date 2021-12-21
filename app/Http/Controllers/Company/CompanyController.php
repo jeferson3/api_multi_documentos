@@ -10,7 +10,15 @@ use Illuminate\Http\Request;
 class CompanyController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     *  Retorna todos as empresas do banco
+     *
+     * @OA\Get (
+     *     path="/companies",
+     *     summary="CompanyController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     tags={"Controllers - Empresas"},
+     *     security={{ "apiAuth": {} }}
+     * )
      *
      * @return JsonResponse
      */
@@ -20,7 +28,26 @@ class CompanyController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Salva uma nova empresa no banco
+     *
+     * @OA\Post (
+     *     path="/companies",
+     *     summary="CompanyController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="400", description="Resposta com erro"),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Salvar empresa",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="cpf_cnpj", type="string", example="11.111.111/0001-11"),
+     *              @OA\Property(property="name", type="string", example="Nome da empresa"),
+     *              @OA\Property(property="description", type="string", example="Descrição da empresa"),
+     *          )
+     *     ),
+     *
+     *     tags={"Controllers - Empresas"},
+     *     security={{ "apiAuth": {} }}
+     * )
      *
      * @param  Request  $request
      * @return JsonResponse
@@ -28,13 +55,21 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
 
-        $name  = $request->get('name');
+        $cpf_cnpj    = $request->get('cpf_cnpj');
+        $name        = $request->get('name');
         $description = $request->get('description');
 
+        if (Company::whereCpfCnpj($cpf_cnpj)->exists()){
+            return response()->json([
+                'status' => false,
+                'message'   => 'Este CPF/CNPJ já está cadastrado em nosso sistema!'
+            ])->setStatusCode(400);
+        }
 
-        if (!is_null($name) && !is_null($description)) {
+        if (!is_null($cpf_cnpj) && !is_null($name) && !is_null($description)) {
 
             Company::create([
+                'cpf_cnpj'    => $cpf_cnpj,
                 'name'        => $name,
                 'description' => $description,
             ]);
@@ -52,14 +87,33 @@ class CompanyController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Retorna uma empresa específico pelo ID
      *
-     * @param  Company  $company
+     * @OA\Get (
+     *     path="/companies/{id}",
+     *     summary="CompanyController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="404", description="Resposta com erro"),
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID do empresa",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *
+     *     tags={"Controllers - Empresas"},
+     *     security={{ "apiAuth": {} }}
+     * )
+     * @param int $id
      * @return JsonResponse
      */
-    public function show(Company $company)
+    public function show(int $id)
     {
-        if (is_null($company) || empty($company)) {
+        if (!$company = Company::find($id)) {
             return response()->json([
                 'status'    => false,
                 'message'   => 'Nenhum registro encontrado!'
@@ -70,28 +124,67 @@ class CompanyController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualiza uma empresa no banco
      *
+     *  @OA\Put (
+     *     path="/companies/{id}",
+     *     summary="CompanyController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="400", description="Resposta com erro"),
+     *     @OA\Response(response="404", description="Resposta com erro"),
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID do empresa",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Salvar empresa",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="cpf_cnpj", type="string", example="11.111.111/0001-11"),
+     *              @OA\Property(property="name", type="string", example="Nome da empresa"),
+     *              @OA\Property(property="description", type="string", example="Descrição da empresa"),
+     *          )
+     *     ),
+     *
+     *     tags={"Controllers - Empresas"},
+     *     security={{ "apiAuth": {} }}
+     * )
      * @param  Request  $request
-     * @param  Company  $company
+     * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, Company $company)
+    public function update(Request $request, int $id)
     {
 
-        if (is_null($company) || empty($company)) {
+        if (!$company = Company::find($id)) {
             return response()->json([
                 'status'    => false,
                 'message'   => 'Nenhum registro encontrado!'
             ])->setStatusCode(404);
         }
+
+        $cpf_cnpj    = $request->get('cpf_cnpj');
         $name  = $request->get('name');
         $description = $request->get('description');
 
+        if (Company::whereCpfCnpj($cpf_cnpj)->exists() && $company->cpf_cnpj != $cpf_cnpj){
+            return response()->json([
+                'status' => false,
+                'message'   => 'Este CPF/CNPJ já está cadastrado em nosso sistema!'
+            ])->setStatusCode(400);
+        }
 
         if (!is_null($name) && !is_null($description)) {
 
             $company->update([
+                'cpf_cnpj'    => $cpf_cnpj,
                 'name'        => $name,
                 'description' => $description,
             ]);
@@ -109,14 +202,33 @@ class CompanyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deleta uma empresa do banco
      *
-     * @param  Company  $company
+     * @OA\Delete  (
+     *     path="/companies/{id}",
+     *     summary="CompanyController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="404", description="Resposta com erro"),
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID do empresa",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *
+     *     tags={"Controllers - Empresas"},
+     *     security={{ "apiAuth": {} }}
+     * )
+     * @param int $id
      * @return JsonResponse
      */
-    public function destroy(Company $company)
+    public function destroy(int $id)
     {
-        if (is_null($company) || empty($company)) {
+        if (!$company = Company::find($id)) {
             return response()->json([
                 'status'    => false,
                 'message'   => 'Nenhum registro encontrado!'

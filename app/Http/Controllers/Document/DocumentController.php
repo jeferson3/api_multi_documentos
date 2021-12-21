@@ -6,11 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Document\Document;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Psy\Util\Json;
 
 class DocumentController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Retorna todos os documentos do banco
+     *
+     * @OA\Get (
+     *     path="/documents",
+     *     summary="DocumentController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     tags={"Controllers - Documentos"},
+     *     security={{ "apiAuth": {} }}
+     * )
      *
      * @return JsonResponse
      */
@@ -20,8 +29,30 @@ class DocumentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Salva um novo documento no banco
      *
+     * @OA\Post (
+     *     path="/documents",
+     *     summary="DocumentController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Salvar documento",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="name", type="string", example="CPF"),
+     *              @OA\Property(property="user_id", type="int", example=1),
+     *              @OA\Property(property="type", type="string", example="identificação"),
+     *              @OA\Property(property="description", type="string", example="Cadastro de Pessoa Física"),
+     *              @OA\Property(property="id_number", type="string", example="111.111.111-11"),
+     *              @OA\Property(property="issue_date", type="string", example="2021-12-12"),
+     *              @OA\Property(property="issuing_body", type="string", example="Receita Federal"),
+     *              @OA\Property(property="country_issuing", type="string", example="Brasil"),
+     *          )
+     *     ),
+     *
+     *     tags={"Controllers - Documentos"},
+     *     security={{ "apiAuth": {} }}
+     * )
      * @param  Request  $request
      * @return JsonResponse
      */
@@ -34,11 +65,11 @@ class DocumentController extends Controller
         $description = $request->get('description');
         $id_number = $request->get('id_number');
         $issue_date = $request->get('issue_date');
-        $issue_body = $request->get('issue_body');
+        $issuing_body = $request->get('issuing_body');
         $country_issuing = $request->get('country_issuing');
 
         if (!is_null($name) && !is_null($user_id) && !is_null($type) && !is_null($description)
-            && !is_null($id_number) && !is_null($issue_date) && !is_null($issue_body) && !is_null($country_issuing)) {
+            && !is_null($id_number) && !is_null($issue_date) && !is_null($issuing_body) && !is_null($country_issuing)) {
 
             Document::create([
                 'name'              => $name,
@@ -47,7 +78,7 @@ class DocumentController extends Controller
                 'description'       => $description,
                 'id_number'         => $id_number,
                 'issue_date'        => $issue_date,
-                'issue_body'        => $issue_body,
+                'issuing_body'        => $issuing_body,
                 'country_issuing'   => $country_issuing
 
             ]);
@@ -65,14 +96,33 @@ class DocumentController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Retorna um documento específico pelo ID
      *
-     * @param  Document  $document
+     * @OA\Get (
+     *     path="/documents/{id}",
+     *     summary="DocumentController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="404", description="Resposta com erro"),
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID do documento",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *
+     *     tags={"Controllers - Documentos"},
+     *     security={{ "apiAuth": {} }}
+     * )
+     * @param  int $id
      * @return JsonResponse
      */
-    public function show(Document $document)
+    public function show(int $id): JsonResponse
     {
-        if (is_null($document) || empty($document)) {
+        if (!$document = Document::find($id)) {
             return response()->json([
                 'status'    => false,
                 'message'   => 'Nenhum registro encontrado!'
@@ -83,32 +133,65 @@ class DocumentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualiza um documento no banco
      *
+     *  @OA\Put (
+     *     path="/documents/{id}",
+     *     summary="DocumentController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="404", description="Resposta com erro"),
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID do documento",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Salvar documento",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="name", type="string", example="CPF"),
+     *              @OA\Property(property="type", type="string", example="identificação"),
+     *              @OA\Property(property="description", type="string", example="Cadastro de Pessoa Física"),
+     *              @OA\Property(property="id_number", type="string", example="111.111.111-11"),
+     *              @OA\Property(property="issue_date", type="string", example="2021-12-12"),
+     *              @OA\Property(property="issuing_body", type="string", example="Receita Federal"),
+     *              @OA\Property(property="country_issuing", type="string", example="Brasil"),
+     *          )
+     *     ),
+     *
+     *     tags={"Controllers - Documentos"},
+     *     security={{ "apiAuth": {} }}
+     * )
      * @param  Request  $request
-     * @param  Document  $document
+     * @param  int $id
      * @return JsonResponse
      */
-    public function update(Request $request, Document $document)
+    public function update(Request $request, int$id): JsonResponse
     {
 
-        if (is_null($document) || empty($document)) {
+        if (!$document = Document::find($id)) {
             return response()->json([
                 'status'    => false,
                 'message'   => 'Nenhum registro encontrado!'
             ])->setStatusCode(404);
         }
 
-        $name  = $request->get('name');
-        $type = $request->get('type');
-        $description = $request->get('description');
-        $id_number = $request->get('id_number');
-        $issue_date = $request->get('issue_date');
-        $issue_body = $request->get('issue_body');
+        $name            = $request->get('name');
+        $type            = $request->get('type');
+        $description     = $request->get('description');
+        $id_number       = $request->get('id_number');
+        $issue_date      = $request->get('issue_date');
+        $issuing_body      = $request->get('issuing_body');
         $country_issuing = $request->get('country_issuing');
 
         if (!is_null($name) && !is_null($type) && !is_null($description) && !is_null($id_number)
-            && !is_null($issue_date) && !is_null($issue_body) && !is_null($country_issuing)) {
+            && !is_null($issue_date) && !is_null($issuing_body) && !is_null($country_issuing)) {
 
             $document->update([
                 'name'              => $name,
@@ -116,7 +199,7 @@ class DocumentController extends Controller
                 'description'       => $description,
                 'id_number'         => $id_number,
                 'issue_date'        => $issue_date,
-                'issue_body'        => $issue_body,
+                'issuing_body'        => $issuing_body,
                 'country_issuing'   => $country_issuing
             ]);
 
@@ -134,14 +217,33 @@ class DocumentController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deleta um documento do banco
      *
-     * @param  Document  $document
+     * @OA\Delete  (
+     *     path="/documents/{id}",
+     *     summary="DocumentController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="404", description="Resposta com erro"),
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID do documento",
+     *          @OA\Schema(
+     *              type="string"
+     *          ),
+     *     ),
+     *
+     *     tags={"Controllers - Documentos"},
+     *     security={{ "apiAuth": {} }}
+     * )
+     * @param  int $id
      * @return JsonResponse
      */
-    public function destroy(Document $document)
+    public function destroy(int $id): JsonResponse
     {
-        if (is_null($document) || empty($document)) {
+        if (!$document = Document::find($id)) {
             return response()->json([
                 'status'    => false,
                 'message'   => 'Nenhum registro encontrado!'
