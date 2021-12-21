@@ -10,7 +10,13 @@ Route::group(['prefix' => '/auth'], function () {
 });
 
 Route::group(['prefix' => '/', 'middleware' => 'authApi'], function () {
-    Route::apiResource('/companies', \App\Http\Controllers\Company\CompanyController::class );
+    Route::apiResource('/companies', \App\Http\Controllers\Company\CompanyController::class);
     Route::apiResource('/users', \App\Http\Controllers\User\UserController::class);
     Route::apiResource('/documents', \App\Http\Controllers\Document\DocumentController::class);
+
+    Route::group(['prefix' => 'permissions'], function (){
+        Route::get('/', [\App\Http\Controllers\Permission\PermissionController::class, 'index']);
+        Route::post('/setPermission', [\App\Http\Controllers\Permission\PermissionController::class, 'setPermission']);
+        Route::post('/removePermission', [\App\Http\Controllers\Permission\PermissionController::class, 'removePermission']);
+    });
 });
