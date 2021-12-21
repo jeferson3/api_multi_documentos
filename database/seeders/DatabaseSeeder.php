@@ -42,9 +42,12 @@ class DatabaseSeeder extends Seeder
             ]);
 
 
+        // os outros níveis de acesso ficam livres para futuras atualizações
         DB::table('profile_permission')
             ->insert([
-                ['profile_id'   => 1, 'permission_id'  => 9],
+                ['profile_id'   => 1, 'permission_id'  => 9], // administrador tem o maior acesso
+                ['profile_id'   => 2, 'permission_id'  => 5], // gerente tem o acesso médio
+                ['profile_id'   => 3, 'permission_id'  => 1], // usuário do sistema tem pouco acesso
             ]);
 
 
