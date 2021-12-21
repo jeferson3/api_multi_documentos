@@ -33,11 +33,11 @@ class DatabaseSeeder extends Seeder
                 ],
                 [
                     'name'        => 'Gerente',
-                    'description' => 'poderá interagir apenas com as informações da sua empresa',
+                    'description' => 'Poderá interagir apenas com as informações da sua empresa',
                 ],
                 [
                     'name'        => 'Usuário do sistema',
-                    'description' => 'poderá interagir apenas com seus dados',
+                    'description' => 'Poderá interagir apenas com seus dados',
                 ]
             ]);
 
@@ -48,18 +48,12 @@ class DatabaseSeeder extends Seeder
             ]);
 
 
-        $c = Company::create([
-            'cpf_cnpj'      => '11.111.111/0001-11',
-            'name'          => 'Empresa',
-            'description'   => 'Descrição da empresa'
-        ]);
-
         User::create([
             'name'          => 'admin',
             'email'         => 'admin@email.com',
             'password'      => Hash::make('password'),
-            'company_id'    => $c->id,
             'profile_id'    => 1
         ]);
+
     }
 }
