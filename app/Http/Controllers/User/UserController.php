@@ -42,6 +42,7 @@ class UserController extends Controller
      *              @OA\Property(property="email", type="String", example="admin@email.com"),
      *              @OA\Property(property="password", type="String", example="password"),
      *              @OA\Property(property="company_id", type="Int", example=1),
+     *              @OA\Property(property="profile_id", type="Int", example=3),
      *          )
      *     ),
      *
@@ -59,6 +60,7 @@ class UserController extends Controller
         $email       = $request->get('email');
         $pass        = $request->get('password');
         $company_id  = $request->get('company_id');
+        $profile_id  = $request->get('profile_id') ?? 3; // se não for passado um perfil é setado o 3 que é de usuário do sistema
 
         if (!is_null($name) && !is_null($email) && !is_null($pass) && !is_null($company_id)) {
 
@@ -67,6 +69,7 @@ class UserController extends Controller
                 'email'      => $email,
                 'password'   => $pass,
                 'company_id' => $company_id,
+                'profile_id' => $profile_id,
             ]);
 
             return response()->json([
@@ -145,6 +148,7 @@ class UserController extends Controller
      *              @OA\Property(property="name", type="String", example="admin"),
      *              @OA\Property(property="email", type="String", example="admin@email.com"),
      *              @OA\Property(property="password", type="String", example="password"),
+     *              @OA\Property(property="profile_id", type="Int", example=3),
      *          )
      *     ),
      *
@@ -166,16 +170,18 @@ class UserController extends Controller
             ])->setStatusCode(404);
         }
 
-        $name       = $request->get('name');
-        $email      = $request->get('email');
-        $pass       = $request->get('password');
+        $name        = $request->get('name');
+        $email       = $request->get('email');
+        $pass        = $request->get('password');
+        $profile_id  = $request->get('profile_id') ?? 3; // se não for passado um perfil é setado o 3 que é de usuário do sistema
 
         if (!is_null($name) && !is_null($email) && !is_null($pass)) {
 
             $user->update([
-                'name' => $request->get('name'),
-                'email' => $request->get('email'),
-                'password' => $request->get('password')
+                'name'       => $name,
+                'email'      => $email,
+                'password'   => $pass,
+                'profile_id' => $profile_id
             ]);
 
             return response()->json([
