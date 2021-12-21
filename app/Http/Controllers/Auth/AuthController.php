@@ -89,7 +89,7 @@ class AuthController extends Controller
         if (User::whereEmail($email)->exists()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Este CPF/CNPJ já está cadastrado em nosso sistema!'
+                'message' => 'Este email já está cadastrado em nosso sistema!'
             ])->setStatusCode(400);
         }
 
