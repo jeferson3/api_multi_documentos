@@ -14,7 +14,7 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
-        'user_id','cpf_cnpj', 'name', 'description'
+        'user_id', 'cpf_cnpj', 'name', 'description'
     ];
 
     public $timestamps = true;
