@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Document\Document;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Psy\Util\Json;
 
 class DocumentController extends Controller
 {
@@ -25,7 +24,7 @@ class DocumentController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Document::all()->toArray())->setStatusCode(200);
+        return response()->json(Document::where('user_id', auth()->user()->id)->get()->toArray())->setStatusCode(200);
     }
 
     /**
@@ -40,7 +39,6 @@ class DocumentController extends Controller
      *          description="Salvar documento",
      *          @OA\JsonContent(
      *              @OA\Property(property="name", type="string", example="CPF"),
-     *              @OA\Property(property="user_id", type="int", example=1),
      *              @OA\Property(property="type", type="string", example="identificação"),
      *              @OA\Property(property="description", type="string", example="Cadastro de Pessoa Física"),
      *              @OA\Property(property="id_number", type="string", example="111.111.111-11"),
@@ -60,7 +58,6 @@ class DocumentController extends Controller
     {
 
         $name  = $request->get('name');
-        $user_id = $request->get('user_id');
         $type = $request->get('type');
         $description = $request->get('description');
         $id_number = $request->get('id_number');
@@ -68,12 +65,19 @@ class DocumentController extends Controller
         $issuing_body = $request->get('issuing_body');
         $country_issuing = $request->get('country_issuing');
 
-        if (!is_null($name) && !is_null($user_id) && !is_null($type) && !is_null($description)
+        if (!is_null($name) && !is_null($type) && !is_null($description)
             && !is_null($id_number) && !is_null($issue_date) && !is_null($issuing_body) && !is_null($country_issuing)) {
+
+            if (Document::where('id_number', $id_number)->exists()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'A identificação já está cadastrada no nosso sistema!'
+                ])->setStatusCode(400);
+            }
 
             Document::create([
                 'name'              => $name,
-                'user_id'           => $user_id,
+                'user_id'           => auth()->user()->id,
                 'type'              => $type,
                 'description'       => $description,
                 'id_number'         => $id_number,
@@ -189,6 +193,13 @@ class DocumentController extends Controller
         $issue_date      = $request->get('issue_date');
         $issuing_body      = $request->get('issuing_body');
         $country_issuing = $request->get('country_issuing');
+
+        if (Document::where('id_number', $id_number)->exists() && $document->id_number != $id_number) {
+            return response()->json([
+                'status' => false,
+                'message' => 'A identificação já está cadastrada no nosso sistema!'
+            ])->setStatusCode(400);
+        }
 
         if (!is_null($name) && !is_null($type) && !is_null($description) && !is_null($id_number)
             && !is_null($issue_date) && !is_null($issuing_body) && !is_null($country_issuing)) {
