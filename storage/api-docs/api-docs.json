@@ -1,0 +1,318 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api Multi Documentos",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Controllers - Autenticação"
+                ],
+                "summary": "AuthController",
+                "description": "Faz o login e retorna o token JWT",
+                "operationId": "a5385ffca73f113abef00ea604d1ca58",
+                "requestBody": {
+                    "description": "Fazer login",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "String",
+                                        "example": "admin@email.com"
+                                    },
+                                    "password": {
+                                        "type": "String",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Resposta com erro"
+                    },
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                }
+            }
+        },
+        "/auth/me": {
+            "post": {
+                "tags": [
+                    "Controllers - Autenticação"
+                ],
+                "summary": "AuthController",
+                "description": "Retorna o usuário logado",
+                "operationId": "ea8d3b7ddbc0c6fa15f201eb5f39c5cd",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Controllers - Autenticação"
+                ],
+                "summary": "AuthController",
+                "description": "Faz o logout do usuário invalidando o token",
+                "operationId": "0f6715df0d22b69c7e35bd32b4c1fc92",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Controllers - Autenticação"
+                ],
+                "summary": "AuthController",
+                "description": "Refresh do token.",
+                "operationId": "d47f685292e0aa5af0c07fa89740bc36",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Controllers - Usuários"
+                ],
+                "summary": "UserController",
+                "description": "Retorna todos os usuários do banco",
+                "operationId": "1ac7a967d2134b8502ddb9f7a2addc4e",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Controllers - Usuários"
+                ],
+                "summary": "UserController",
+                "description": "Salva um novo usuário no banco",
+                "operationId": "726f8e83a310fb2ff5b279441b206e77",
+                "requestBody": {
+                    "description": "Salvar usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "String",
+                                        "example": "admin"
+                                    },
+                                    "email": {
+                                        "type": "String",
+                                        "example": "admin@email.com"
+                                    },
+                                    "password": {
+                                        "type": "String",
+                                        "example": "password"
+                                    },
+                                    "company_id": {
+                                        "type": "Int",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "Controllers - Usuários"
+                ],
+                "summary": "UserController",
+                "description": "Retorna um usuário específico pelo ID",
+                "operationId": "44154112522eab07fbe01b1907cd1507",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Controllers - Usuários"
+                ],
+                "summary": "UserController",
+                "description": "Atualiza um usuário no banco",
+                "operationId": "7521891788bb39bc9a09a95e5eaca89c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Salvar usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "String",
+                                        "example": "admin"
+                                    },
+                                    "email": {
+                                        "type": "String",
+                                        "example": "admin@email.com"
+                                    },
+                                    "password": {
+                                        "type": "String",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Controllers - Usuários"
+                ],
+                "summary": "UserController",
+                "description": "Deleta um usuário do banco",
+                "operationId": "f349744fd3d118237de5e4b67023e915",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "apiAuth": {
+                "type": "http",
+                "description": "Login with email and password to get the authentication token",
+                "name": "Token based Based",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}

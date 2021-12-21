@@ -10,7 +10,7 @@ Route::group(['prefix' => '/auth'], function () {
 });
 
 Route::group(['prefix' => '/', 'middleware' => 'authApi'], function () {
-    Route::apiResource('/company', '\App\Http\Controllers\Company\CompanyController');
-    Route::apiResource('/user', '\App\Http\Controllers\User\UserController');
-    Route::apiResource('/document', '\App\Http\Controllers\Document\DocumentController');
+    Route::apiResource('/companies', \App\Http\Controllers\Company\CompanyController::class );
+    Route::apiResource('/users', \App\Http\Controllers\User\UserController::class);
+    Route::apiResource('/documents', \App\Http\Controllers\Document\DocumentController::class);
 });
