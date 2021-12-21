@@ -2,8 +2,14 @@
 
 namespace App\Models\User;
 
+use App\Models\Company\Company;
+use App\Models\Document\Document;
+use App\Models\Profile\Profile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,7 +28,6 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'company_id',
         'profile_id'
     ];
 
@@ -64,5 +69,29 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function Company(): HasOne
+    {
+        return $this->hasOne(Company::class, 'company_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function Documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function Profile(): BelongsTo
+    {
+        return $this->belongsTo(Profile::class, 'profile_id');
     }
 }
