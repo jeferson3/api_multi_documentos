@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -96,8 +97,8 @@ class AuthController extends Controller
         User::create([
             'name'       => $name,
             'email'      => $email,
-            'password'   => $pass,
-            'profile_id' => 2, // perfil de gerente de empresa
+            'password'   => Hash::make($pass),
+            'profile_id' => 3, // perfil de usuário do sistema
         ]);
 
         return response()->json([
