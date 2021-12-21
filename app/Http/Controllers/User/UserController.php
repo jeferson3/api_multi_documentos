@@ -6,9 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\User\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('admin');
+    }
+
     /**
      * Retorna todos os usuários do banco
      *
@@ -39,10 +47,9 @@ class UserController extends Controller
      *          required=true,
      *          description="Salvar usuário",
      *          @OA\JsonContent(
-     *              @OA\Property(property="name", type="String", example="admin"),
-     *              @OA\Property(property="email", type="String", example="admin@email.com"),
+     *              @OA\Property(property="name", type="String", example="user"),
+     *              @OA\Property(property="email", type="String", example="user@email.com"),
      *              @OA\Property(property="password", type="String", example="password"),
-     *              @OA\Property(property="company_id", type="Int", example=1),
      *              @OA\Property(property="profile_id", type="Int", example=3),
      *          )
      *     ),
@@ -60,7 +67,6 @@ class UserController extends Controller
         $name        = $request->get('name');
         $email       = $request->get('email');
         $pass        = $request->get('password');
-        $company_id  = $request->get('company_id');
         $profile_id  = $request->get('profile_id') ?? 3; // se não for passado um perfil é setado o 3 que é de usuário do sistema
 
         if (is_null($name) || is_null($email) || is_null($pass)) {
@@ -80,9 +86,8 @@ class UserController extends Controller
         User::create([
             'name'       => $name,
             'email'      => $email,
-            'password'   => $pass,
-            'company_id' => $company_id,
-            'profile_id' => $profile_id, // perfil de gerente de empresa
+            'password'   => Hash::make($pass),
+            'profile_id' => $profile_id
         ]);
 
         return response()->json([
@@ -152,8 +157,8 @@ class UserController extends Controller
      *          required=true,
      *          description="Salvar usuário",
      *          @OA\JsonContent(
-     *              @OA\Property(property="name", type="String", example="admin"),
-     *              @OA\Property(property="email", type="String", example="admin@email.com"),
+     *              @OA\Property(property="name", type="String", example="user"),
+     *              @OA\Property(property="email", type="String", example="user@email.com"),
      *              @OA\Property(property="password", type="String", example="password"),
      *              @OA\Property(property="profile_id", type="Int", example=3),
      *          )
@@ -180,7 +185,6 @@ class UserController extends Controller
         $name        = $request->get('name');
         $email       = $request->get('email');
         $pass        = $request->get('password');
-        $profile_id  = $request->get('profile_id') ?? 3; // se não for passado um perfil é setado o 3 que é de usuário do sistema
 
         if (User::where('email', $email)->exists() && $user->email != $email) {
             return response()->json([
@@ -194,8 +198,7 @@ class UserController extends Controller
             $user->update([
                 'name'       => $name,
                 'email'      => $email,
-                'password'   => $pass,
-                'profile_id' => $profile_id
+                'password'   => Hash::make($pass)
             ]);
 
             return response()->json([
