@@ -11,5 +11,9 @@ class Company extends Model
 
     protected $table = 'companies';
 
+    protected $fillable = [
+        'name', 'description'
+    ];
+
     public $timestamps = true;
 }
