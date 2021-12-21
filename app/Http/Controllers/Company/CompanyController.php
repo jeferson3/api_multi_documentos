@@ -24,7 +24,7 @@ class CompanyController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Company::all()->toArray())->setStatusCode(200);
+        return response()->json(Company::where('user_id', auth()->user()->id)->first())->setStatusCode(200);
     }
 
     /**
@@ -59,6 +59,13 @@ class CompanyController extends Controller
         $name        = $request->get('name');
         $description = $request->get('description');
 
+        if (is_null($cpf_cnpj) || is_null($name) || is_null($description)) {
+            return response()->json([
+                'status' => false,
+                'message'   => 'Não foi possível realizar a operação!'
+            ])->setStatusCode(400);
+        }
+
         if (Company::whereCpfCnpj($cpf_cnpj)->exists()){
             return response()->json([
                 'status' => false,
@@ -66,24 +73,22 @@ class CompanyController extends Controller
             ])->setStatusCode(400);
         }
 
-        if (!is_null($cpf_cnpj) && !is_null($name) && !is_null($description)) {
+        Company::create([
+            'cpf_cnpj'    => $cpf_cnpj,
+            'name'        => $name,
+            'description' => $description,
+            'user_id'     => auth()->user()->id
+        ]);
 
-            Company::create([
-                'cpf_cnpj'    => $cpf_cnpj,
-                'name'        => $name,
-                'description' => $description,
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'message'   => 'Operação realizada com sucesso!'
-            ])->setStatusCode(201);
-        }
+        // mudando o perfil do usuário logado de usuário do sistema para gerente de empresa
+        $user = auth()->user();
+        $user->profile_id = 2;
+        $user->save();
 
         return response()->json([
-            'status' => false,
-            'message'   => 'Não foi possível realizar a operação!'
-        ])->setStatusCode(400);
+            'status' => true,
+            'message'   => 'Operação realizada com sucesso!'
+        ])->setStatusCode(201);
     }
 
     /**
@@ -236,6 +241,11 @@ class CompanyController extends Controller
         }
 
         $company->delete();
+
+        // mudando o perfil do usuário logado de gerente de empresa para usuário do sistema
+        $user = auth()->user();
+        $user->profile_id = 3;
+        $user->save();
 
         return response()->json([
             'status'    => true,
