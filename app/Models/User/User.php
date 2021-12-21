@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Company\Company;
 use App\Models\Document\Document;
+use App\Models\Permission\Permission;
 use App\Models\Profile\Profile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -76,7 +78,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function Company(): HasOne
     {
-        return $this->hasOne(Company::class, 'company_id');
+        return $this->hasOne(Company::class);
     }
 
     /**
@@ -84,7 +86,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function Documents(): HasMany
     {
-        return $this->hasMany(Document::class, 'user_id');
+        return $this->hasMany(Document::class);
     }
 
     /**
@@ -92,6 +94,16 @@ class User extends Authenticatable implements JWTSubject
      */
     public function Profile(): BelongsTo
     {
-        return $this->belongsTo(Profile::class, 'profile_id');
+        return $this->belongsTo(Profile::class);
+    }
+
+    public function getPermission()
+    {
+        $user    = auth()->user();
+        $profile = $user->Profile;
+
+        return Permission::find(DB::table('profile_permission')
+                                            ->where('profile_id', $profile->id)
+                                            ->first()->permission_id)->value;
     }
 }

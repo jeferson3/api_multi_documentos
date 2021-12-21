@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Profile extends Model
 {
@@ -19,24 +20,15 @@ class Profile extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'name', 'description'
+        'id', 'name', 'description'
     ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Documents(): HasMany
+    public function Users(): HasMany
     {
         return $this->hasMany(User::class, 'profile_id');
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function Permissions(): BelongsToMany
-    {
-        return $this->belongsToMany(Permission::class, 'profile_permission');
-    }
-
 
 }

@@ -15,11 +15,4 @@ class Permission extends Model
 
     public $timestamps = true;
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function Profiles(): BelongsToMany
-    {
-        return $this->belongsToMany(Profile::class, 'profile_permission');
-    }
 }
