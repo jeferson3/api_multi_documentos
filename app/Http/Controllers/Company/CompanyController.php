@@ -98,40 +98,14 @@ class CompanyController extends Controller
     }
 
     /**
-     * Retorna uma empresa específico pelo ID
+     * Método não será usado
      *
-     * @OA\Get (
-     *     path="/companies/{id}",
-     *     summary="CompanyController",
-     *     @OA\Response(response="200", description="Resposta com sucesso"),
-     *     @OA\Response(response="404", description="Resposta com erro"),
-     *
-     *     @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          required=true,
-     *          description="ID do empresa",
-     *          @OA\Schema(
-     *              type="string"
-     *          ),
-     *     ),
-     *
-     *     tags={"Controllers - Empresas"},
-     *     security={{ "apiAuth": {} }}
-     * )
      * @param int $id
-     * @return JsonResponse
+     * @return JsonResponse|object
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        if (!$company = Company::find($id)) {
-            return response()->json([
-                'status'    => false,
-                'message'   => 'Nenhum registro encontrado!'
-            ])->setStatusCode(404);
-        }
-
-        return response()->json($company)->setStatusCode(200);
+        return response()->json($id)->setStatusCode(200);
     }
 
     /**
