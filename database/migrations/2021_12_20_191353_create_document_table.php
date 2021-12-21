@@ -17,8 +17,9 @@ class CreateDocumentTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('name', 50)->comment('Nome do documento');
+            $table->string('description', 255)->comment('Descrição do documento')->nullable();
             $table->string('type', 50)->comment('Tipo do documento');
-            $table->string('id_number', 100)->comment('Número de identificação do documento');
+            $table->string('id_number', 100)->unique()->comment('Número de identificação do documento');
             $table->date('issue_date')->comment('Data de emissão do documento');
             $table->string('issuing_body', 50)->comment('Órgão emissor do documento')->nullable();
             $table->string('country_issuing', 100)->comment('País onde o documento foi emitido')->nullable();

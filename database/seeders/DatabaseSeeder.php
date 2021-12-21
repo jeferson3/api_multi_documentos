@@ -19,6 +19,14 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
+
+        DB::table('permissions')
+            ->insert([
+                ['value' => 1],
+                ['value' => 5],
+                ['value' => 9],
+            ]);
+
         DB::table('profiles')
             ->insert([
                 [
@@ -35,16 +43,25 @@ class DatabaseSeeder extends Seeder
                 ]
             ]);
 
+
+        DB::table('profile_permission')
+            ->insert([
+                ['profile_id'   => 1, 'permission_id'  => 3],
+            ]);
+
+
         $c = Company::create([
-            'name'          => 'c1',
-            'description'   => 'description'
+            'cpf_cnpj'      => '11.111.111/0001-11',
+            'name'          => 'Empresa',
+            'description'   => 'Descrição da empresa'
         ]);
 
         User::create([
             'name'          => 'admin',
             'email'         => 'admin@email.com',
             'password'      => Hash::make('password'),
-            'company_id'    => $c->id
+            'company_id'    => $c->id,
+            'profile_id'    => 1
         ]);
     }
 }
