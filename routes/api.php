@@ -15,7 +15,7 @@ Route::group(['prefix' => '/', 'middleware' => 'authApi'], function () {
     Route::apiResource('/users', \App\Http\Controllers\User\UserController::class);
     Route::apiResource('/documents', \App\Http\Controllers\Document\DocumentController::class);
 
-    Route::group(['prefix' => 'permissions'], function (){
+    Route::group(['prefix' => 'permissions', 'middleware' => 'admin'], function (){
         Route::get('/', [\App\Http\Controllers\Permission\PermissionController::class, 'index']);
         Route::post('/setPermission', [\App\Http\Controllers\Permission\PermissionController::class, 'setPermission']);
         Route::post('/removePermission', [\App\Http\Controllers\Permission\PermissionController::class, 'removePermission']);
