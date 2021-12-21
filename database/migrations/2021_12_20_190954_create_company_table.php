@@ -15,10 +15,17 @@ class CreateCompanyTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('cpf_cnpj', 25)->unique();
             $table->string('name');
             $table->string('description')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->on('users')
+                ->references('id')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
         });
     }
 
