@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('gerente');
+    }
+
     /**
      *  Retorna todos as empresas do banco
      *
