@@ -20,12 +20,10 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
 
-        DB::table('permissions')
-            ->insert([
-                ['value' => 1],
-                ['value' => 5],
-                ['value' => 9],
-            ]);
+        foreach (range(1, 9) as $item) {
+            DB::table('permissions')
+                ->insert(['value' => $item]);
+        }
 
         DB::table('profiles')
             ->insert([
@@ -46,7 +44,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('profile_permission')
             ->insert([
-                ['profile_id'   => 1, 'permission_id'  => 3],
+                ['profile_id'   => 1, 'permission_id'  => 9],
             ]);
 
 

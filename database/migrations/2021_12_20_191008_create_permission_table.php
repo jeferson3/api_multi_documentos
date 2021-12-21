@@ -16,7 +16,7 @@ class CreatePermissionTable extends Migration
         Schema::create('permissions', function (Blueprint $table) {
 
             $table->id();
-            $table->integer('value');
+            $table->integer('value')->comment('Nível de acesso da permissão de 1-9');
             $table->timestamps();
         });
     }
