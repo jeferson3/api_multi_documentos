@@ -34,6 +34,7 @@ class UserController extends Controller
      *     path="/users",
      *     summary="UserController",
      *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     @OA\Response(response="400", description="Resposta de erro"),
      *     @OA\RequestBody(
      *          required=true,
      *          description="Salvar usuário",
@@ -62,26 +63,32 @@ class UserController extends Controller
         $company_id  = $request->get('company_id');
         $profile_id  = $request->get('profile_id') ?? 3; // se não for passado um perfil é setado o 3 que é de usuário do sistema
 
-        if (!is_null($name) && !is_null($email) && !is_null($pass) && !is_null($company_id)) {
-
-            User::create([
-                'name'       => $name,
-                'email'      => $email,
-                'password'   => $pass,
-                'company_id' => $company_id,
-                'profile_id' => $profile_id,
-            ]);
-
+        if (is_null($name) || is_null($email) || is_null($pass)) {
             return response()->json([
-                'status' => true,
-                'message'   => 'Operação realizada com sucesso!'
-            ])->setStatusCode(201);
+                'status' => false,
+                'message'   => 'Não foi possível realizar a operação!'
+            ])->setStatusCode(400);
         }
 
+        if (User::whereEmail($email)->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Este email já está cadastrado no nosso sistema!'
+            ])->setStatusCode(400);
+        }
+
+        User::create([
+            'name'       => $name,
+            'email'      => $email,
+            'password'   => $pass,
+            'company_id' => $company_id,
+            'profile_id' => $profile_id, // perfil de gerente de empresa
+        ]);
+
         return response()->json([
-            'status' => false,
-            'message'   => 'Não foi possível realizar a operação!'
-        ])->setStatusCode(400);
+            'status' => true,
+            'message' => 'Operação realizada com sucesso!'
+        ])->setStatusCode(201);
     }
 
     /**
@@ -174,6 +181,13 @@ class UserController extends Controller
         $email       = $request->get('email');
         $pass        = $request->get('password');
         $profile_id  = $request->get('profile_id') ?? 3; // se não for passado um perfil é setado o 3 que é de usuário do sistema
+
+        if (User::where('email', $email)->exists() && $user->email != $email) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Este email já está cadastrado no nosso sistema!'
+            ])->setStatusCode(400);
+        }
 
         if (!is_null($name) && !is_null($email) && !is_null($pass)) {
 
