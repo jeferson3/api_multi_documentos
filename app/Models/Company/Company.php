@@ -12,7 +12,7 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
-        'name', 'description'
+        'cpf_cnpj', 'name', 'description'
     ];
 
     public $timestamps = true;
