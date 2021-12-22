@@ -247,6 +247,9 @@ class UserController extends Controller
             ])->setStatusCode(404);
         }
 
+        $user->Company()?->delete();
+        $user->Documents()?->delete();
+
         $user->delete();
 
         return response()->json([
