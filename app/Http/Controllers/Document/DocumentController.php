@@ -24,6 +24,12 @@ class DocumentController extends Controller
      */
     public function index(): JsonResponse
     {
+        $user = auth()->user();
+
+        // se for administrador geral retorna todos os documentos do banco
+        if ($user->getPermission() === 9) return response()->json(Document::all());
+
+        // caso contrário retorna somente os documentos que pertencem ao usuário logado
         return response()->json(Document::where('user_id', auth()->user()->id)->get()->toArray())->setStatusCode(200);
     }
 
