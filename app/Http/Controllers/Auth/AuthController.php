@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -14,6 +15,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('authApi', ['except' => ['login', 'register']]);
+        $this->middleware('admin')->only('permissions');
     }
 
     /**
@@ -164,5 +166,31 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         return response()->json(['token' => auth()->refresh()])->setStatusCode(200);
+    }
+
+    /**
+     * Retorna os usuários e suas permissões
+     *
+     * @OA\Post  (
+     *     path="/auth/permissions",
+     *     summary="AuthController",
+     *     @OA\Response(response="200", description="Resposta com sucesso"),
+     *     security={{ "apiAuth": {} }},
+     *
+     *     tags={"Controllers - Autenticação"}
+     *    )
+     * @return JsonResponse
+     */
+    public function permissions(): JsonResponse
+    {
+
+        $res = DB::table('profile_permission')
+            ->selectRaw('users.name as user, profiles.name as profile, permissions.value as level_permission')
+            ->join('profiles', 'profile_permission.profile_id', '=', 'profiles.id')
+            ->join('permissions', 'profile_permission.permission_id', '=', 'permissions.id')
+            ->join('users', 'profiles.id', '=', 'users.profile_id')
+            ->get();
+
+        return response()->json($res)->setStatusCode(200);
     }
 }
