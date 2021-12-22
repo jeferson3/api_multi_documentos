@@ -49,6 +49,49 @@
                 }
             }
         },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Controllers - Autenticação"
+                ],
+                "summary": "AuthController",
+                "description": "Salva um novo usuário no banco",
+                "operationId": "6703d7156c265a1e7b47e500d2a16304",
+                "requestBody": {
+                    "description": "Salvar usuário",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "String",
+                                        "example": "admin"
+                                    },
+                                    "email": {
+                                        "type": "String",
+                                        "example": "admin@email.com"
+                                    },
+                                    "password": {
+                                        "type": "String",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "400": {
+                        "description": "Resposta de erro"
+                    }
+                }
+            }
+        },
         "/auth/me": {
             "post": {
                 "tags": [
@@ -109,6 +152,404 @@
                 ]
             }
         },
+        "/auth/permissions": {
+            "post": {
+                "tags": [
+                    "Controllers - Autenticação"
+                ],
+                "summary": "AuthController",
+                "description": "Retorna os usuários e suas permissões",
+                "operationId": "13882d655210405f40ee3a912cf869f1",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/companies": {
+            "get": {
+                "tags": [
+                    "Controllers - Empresas"
+                ],
+                "summary": "CompanyController",
+                "description": "Retorna todos as empresas do banco",
+                "operationId": "0773410b3983e9c0d9daa5baec488c24",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Controllers - Empresas"
+                ],
+                "summary": "CompanyController",
+                "description": "Salva uma nova empresa no banco",
+                "operationId": "85040b55d98c74c081c05ae680fd9e4b",
+                "requestBody": {
+                    "description": "Salvar empresa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpf_cnpj": {
+                                        "type": "string",
+                                        "example": "11.111.111/0001-11"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nome da empresa"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Descrição da empresa"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "400": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/companies/{id}": {
+            "put": {
+                "tags": [
+                    "Controllers - Empresas"
+                ],
+                "summary": "CompanyController",
+                "description": "Atualiza uma empresa no banco",
+                "operationId": "338146c1ad68902ff7524a3883630417",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Salvar empresa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpf_cnpj": {
+                                        "type": "string",
+                                        "example": "11.111.111/0001-11"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nome da empresa"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Descrição da empresa"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "400": {
+                        "description": "Resposta com erro"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Controllers - Empresas"
+                ],
+                "summary": "CompanyController",
+                "description": "Deleta uma empresa do banco",
+                "operationId": "bc827bb35f275985ce25072016c95e07",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/documents": {
+            "get": {
+                "tags": [
+                    "Controllers - Documentos"
+                ],
+                "summary": "DocumentController",
+                "description": "Retorna todos os documentos do banco",
+                "operationId": "60c956b37150ce1e2ee7ecdad7cfbd19",
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Controllers - Documentos"
+                ],
+                "summary": "DocumentController",
+                "description": "Salva um novo documento no banco",
+                "operationId": "b4e58f55ee3d28a7bd8c1a59a6602190",
+                "requestBody": {
+                    "description": "Salvar documento",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "CPF"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "identificação"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Cadastro de Pessoa Física"
+                                    },
+                                    "id_number": {
+                                        "type": "string",
+                                        "example": "111.111.111-11"
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "example": "2021-12-12"
+                                    },
+                                    "issuing_body": {
+                                        "type": "string",
+                                        "example": "Receita Federal"
+                                    },
+                                    "country_issuing": {
+                                        "type": "string",
+                                        "example": "Brasil"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
+        "/documents/{id}": {
+            "get": {
+                "tags": [
+                    "Controllers - Documentos"
+                ],
+                "summary": "DocumentController",
+                "description": "Retorna um documento específico pelo ID",
+                "operationId": "741831190339cadae27b6a75f06e4a6b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do documento",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Controllers - Documentos"
+                ],
+                "summary": "DocumentController",
+                "description": "Atualiza um documento no banco",
+                "operationId": "7d07711260696216ed15edee090d9c9f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do documento",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Salvar documento",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "CPF"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "identificação"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Cadastro de Pessoa Física"
+                                    },
+                                    "id_number": {
+                                        "type": "string",
+                                        "example": "111.111.111-11"
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "example": "2021-12-12"
+                                    },
+                                    "issuing_body": {
+                                        "type": "string",
+                                        "example": "Receita Federal"
+                                    },
+                                    "country_issuing": {
+                                        "type": "string",
+                                        "example": "Brasil"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Controllers - Documentos"
+                ],
+                "summary": "DocumentController",
+                "description": "Deleta um documento do banco",
+                "operationId": "ee7d37083cd9fc2bd3b40d30552c268e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do documento",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resposta com sucesso"
+                    },
+                    "404": {
+                        "description": "Resposta com erro"
+                    }
+                },
+                "security": [
+                    {
+                        "apiAuth": []
+                    }
+                ]
+            }
+        },
         "/users": {
             "get": {
                 "tags": [
@@ -144,19 +585,19 @@
                                 "properties": {
                                     "name": {
                                         "type": "String",
-                                        "example": "admin"
+                                        "example": "user"
                                     },
                                     "email": {
                                         "type": "String",
-                                        "example": "admin@email.com"
+                                        "example": "user@email.com"
                                     },
                                     "password": {
                                         "type": "String",
                                         "example": "password"
                                     },
-                                    "company_id": {
+                                    "profile_id": {
                                         "type": "Int",
-                                        "example": 1
+                                        "example": 3
                                     }
                                 },
                                 "type": "object"
@@ -167,6 +608,9 @@
                 "responses": {
                     "200": {
                         "description": "Resposta com sucesso"
+                    },
+                    "400": {
+                        "description": "Resposta de erro"
                     }
                 },
                 "security": [
@@ -236,15 +680,19 @@
                                 "properties": {
                                     "name": {
                                         "type": "String",
-                                        "example": "admin"
+                                        "example": "user"
                                     },
                                     "email": {
                                         "type": "String",
-                                        "example": "admin@email.com"
+                                        "example": "user@email.com"
                                     },
                                     "password": {
                                         "type": "String",
                                         "example": "password"
+                                    },
+                                    "profile_id": {
+                                        "type": "Int",
+                                        "example": 3
                                     }
                                 },
                                 "type": "object"
