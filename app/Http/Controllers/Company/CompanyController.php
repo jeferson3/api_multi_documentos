@@ -12,7 +12,8 @@ class CompanyController extends Controller
 
     public function __construct()
     {
-        $this->middleware('gerente');
+        // área restricta ao usuário que tem uma empresa, exceto se um usuário normal quiser criar uma empresa
+        $this->middleware('gerente', ['except' => ['store']]);
     }
 
     /**
@@ -30,6 +31,13 @@ class CompanyController extends Controller
      */
     public function index(): JsonResponse
     {
+
+        $user = auth()->user();
+
+        // se for administrador geral retorna todos as empresas do banco
+        if ($user->getPermission() === 9) return response()->json(Company::all());
+
+        // caso contrário retorna somente a empresa que pertence ao usuário logado
         return response()->json(Company::where('user_id', auth()->user()->id)->first())->setStatusCode(200);
     }
 
